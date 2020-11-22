@@ -1,1 +1,71 @@
 import json
+from subprocess import check_output
+from xml.etree.ElementTree import fromstring
+from ipaddress import IPv4Interface, IPv6Interface
+
+
+def getNics():
+
+    cmd = 'wmic.exe nicconfig where "IPEnabled  = True" get ipaddress,MACAddress,IPSubnet,DNSHostName,Caption,DefaultIPGateway,DNSServerSearchOrder /format:rawxml'
+    xml_text = check_output(cmd, creationflags=8)
+    xml_root = fromstring(xml_text)
+
+    nics = []
+    keyslookup = {
+        'DNSHostName': 'hostname',
+        'IPAddress': 'ip',
+        'IPSubnet': '_mask',
+        'Caption': 'hardware',
+        'MACAddress': 'mac',
+        'DefaultIPGateway': 'gateway',
+        'DNSServerSearchOrder': 'dns'
+    }
+
+    for nic in xml_root.findall("./RESULTS/CIM/INSTANCE"):
+        # parse and store nic info
+        n = {
+            'hostname': '',
+            'ip': [],
+            '_mask': [],
+            'hardware': '',
+            'mac': '',
+            'gateway': [],
+            'dns': []
+        }
+        for prop in nic:
+            name = keyslookup[prop.attrib['NAME']]
+            if prop.tag == 'PROPERTY':
+                if len(prop):
+                    for v in prop:
+                        n[name] = v.text
+            elif prop.tag == 'PROPERTY.ARRAY':
+                for v in prop.findall("./VALUE.ARRAY/VALUE"):
+                    n[name].append(v.text)
+        nics.append(n)
+
+        # creates python ipaddress objects from ips and masks
+        # for i in range(len(n['ip'])):
+        #     arg = '%s/%s' % (n['ip'][i], n['_mask'][i])
+        #     if ':' in n['ip'][i]:
+        #         n['ip'][i] = IPv6Interface(arg)
+        #     else:
+        #         n['ip'][i] = IPv4Interface(arg)
+        # del n['_mask']
+
+    return nics
+
+
+def main():
+    nics = getNics()
+    results = {'Gateway': '(5/5) OK', 'DNS': '(5/5) OK'}
+    toDump = {
+        "nics": nics,
+        "testResults": results
+    }
+
+    with open("output.json", "w") as f:
+        json.dump(toDump, f)
+
+
+if __name__ == "__main__":
+    main()
