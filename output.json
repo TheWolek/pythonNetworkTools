@@ -1,14 +1,1 @@
-{
-  "nics": [
-    {
-      "hostname": "DESKTOP-A2DEES7",
-      "ip": ["192.168.0.2", "fe80::d5c1:345e:f671:310c"],
-      "_mask": ["255.255.255.0", "64"],
-      "hardware": "[00000002] Realtek PCIe GbE Family Controller",
-      "mac": "60:A4:4C:57:89:F3",
-      "gateway": ["192.168.0.1"],
-      "dns": ["1.1.1.1", "8.8.8.8"]
-    }
-  ],
-  "testResults": { "Gateway": "(5/5) OK", "DNS": "(5/5) OK" }
-}
+{"network interfaces": [{"hostname": "DESKTOP-A2DEES7", "ip": ["192.168.0.2", "fe80::d5c1:345e:f671:310c"], "_mask": ["255.255.255.0", "64"], "hardware": "[00000002] Realtek PCIe GbE Family Controller", "mac": "60:A4:4C:57:89:F3", "gateway": ["192.168.0.1"], "dns": ["1.1.1.1", "8.8.8.8"]}]}
