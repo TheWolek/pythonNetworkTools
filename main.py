@@ -12,6 +12,7 @@ def main():
     toDump = {}
     cfg = {}
     cfgPath = 'conf.json'
+    dumpPath = 'output.json'
 
     ########################## UTILITY ##########################
 
@@ -37,9 +38,12 @@ def main():
 
     # creates output log file
     def createDump():
-        with open("output.json", "w") as f:
-            json.dump(toDump, f)
-        return
+        try:
+            with open(dumpPath, "w") as f:
+                json.dump(toDump, f)
+            return True
+        except:
+            return False
 
     ############################ INIT ############################
 
@@ -92,7 +96,17 @@ def main():
         addToDump("pingHosts", res)
 
     # create output log file with all cached info about tests
-    createDump()
+    line = "#"
+    for i in range(0, 30):
+        if i == 15:
+            line = line + " END OF TESTS "
+        line = line + "#"
+
+    print(line)
+    if createDump():
+        print(f"log file {dumpPath} has been created")
+    else:
+        print("cannot create log file at current dir")
 
 
 if __name__ == "__main__":
