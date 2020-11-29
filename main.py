@@ -7,22 +7,30 @@ from diagnoze import diagnoze
 
 def main():
     # main vars
-    conductedTests = []
     toDump = {}
+    cfg = {}
+    cfgPath = 'conf.json'
+
+    ##########################
+    # read config file
+
+    def getCfg():
+        try:
+            with open("conf.json", "r") as cfgFile:
+                cfg = json.load(cfgFile)
+
+            if cfg != {}:
+                print("config loaded")
+            else:
+                print("error: cfg file empty")
+                quit()
+        except:
+            print("error: not cfg file found")
 
     ##########################
 
-    # return flags passed to script or False if there is no flags
-    def getFlags():
-        args = sys.argv
-
-        if len(args) - 1 > 0:
-            args.pop(0)
-            return args
-        else:
-            return False
-
     # adds test results to output log
+
     def addToDump(category: str, value):
         toDump[category] = value
 
@@ -35,42 +43,9 @@ def main():
     ######################################
 
     # always get NIC data and log them
+    getCfg()
     nics = getNics()
     addToDump("network interfaces", nics)
-
-    # run functions when flag(s) is present
-    flags = getFlags()
-    if flags:
-        if "-diag" in flags:
-            conductedTests.append("diagnoze")
-            results = diagnoze()
-            addToDump("testResults", results)
-
-        if "-ping" in flags:
-            pass
-    # if there is not flags ask user what kind of action do
-    else:
-        valid = False
-
-        def choose():
-            print("Please choose what do you want to do:",
-                  "0) exit", "1) diagnoze network", "2) ping host", sep="\n")
-            return input()
-
-        select = choose()
-        while not valid:
-            if select == "0":  # exit
-                break
-            if select == "1":  # diagnoze
-                results = diagnoze()
-                addToDump("testResults", results)
-                break
-            elif select == "2":  # ping
-                print("ping")
-                break
-            else:  # else -> ask again
-                select = choose()
-                continue
 
     # create output log file with all cached info about tests
     createDump()
