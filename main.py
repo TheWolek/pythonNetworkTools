@@ -57,6 +57,7 @@ def main():
         # else:
         results[targetName] = diagnoze(target)
 
+        print(results[targetName])
         return results
 
     if 'selfDiagnoze' in cfg:
@@ -74,10 +75,21 @@ def main():
                     with concurrent.futures.ThreadPoolExecutor() as executor:
                         fnc = executor.submit(TestHandler, name, nic)
                         res.append(fnc.result())
-        print("Test results:", res)
+
+        addToDump("selfDiagnoze", res)
+
+    if 'pingHosts' in cfg:
+        print("initializing pinging hosts")
+        res = []
+        for item in cfg['pingHosts']:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                fnc = executor.submit(TestHandler, item, item)
+                res.append(fnc.result())
+
+        addToDump("pingHosts", res)
 
     # create output log file with all cached info about tests
-    # createDump()
+    createDump()
 
 
 if __name__ == "__main__":
