@@ -1,4 +1,4 @@
-import pythonping
+from pythonping import ping
 
 
 def diagnoze(Int):
@@ -6,11 +6,16 @@ def diagnoze(Int):
     print("diagnozing ", Int, "...", sep="")
 
     def runTest(target):
-        return "OK"
+        return ping(target)
 
     try:
         results = runTest(Int)
-        return results
+        if results.success(3):
+            return "OK (5/5)"
+        elif results.success(2):
+            return "OK (3/5)"
+        else:
+            return "Not responding (0/0)"
     except:
         print("error in ping")
         return "ERROR"
