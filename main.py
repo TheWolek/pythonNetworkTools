@@ -1,6 +1,7 @@
 import json
 import sys
 import concurrent.futures
+import time
 
 from nics import getNics
 from diagnoze import diagnoze
@@ -61,7 +62,8 @@ def main():
         return results
 
     if 'selfDiagnoze' in cfg:
-        print("initializing self Diagnoze")
+        print("initializing self Diagnoze...")
+        time.sleep(0.6)
         res = []
         for item in cfg['selfDiagnoze']:
             if item == "gateway":
@@ -79,7 +81,8 @@ def main():
         addToDump("selfDiagnoze", res)
 
     if 'pingHosts' in cfg:
-        print("initializing pinging hosts")
+        print("initializing pinging hosts...")
+        time.sleep(0.6)
         res = []
         for item in cfg['pingHosts']:
             with concurrent.futures.ThreadPoolExecutor() as executor:
