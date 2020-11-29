@@ -1,10 +1,16 @@
-def diagnoze(nics):
-    nics = nics[0]
+import pythonping
 
-    def testDNS():
-        return
 
-    def testGateway():
-        return
+def diagnoze(Int):
+    # nics = nics[0]
+    print("diagnozing ", Int, "...", sep="")
 
-    return {'Gateway': testGateway()}
+    def runTest(target):
+        return "OK"
+
+    try:
+        results = runTest(Int)
+        return results
+    except:
+        print("error in ping")
+        return "ERROR"
